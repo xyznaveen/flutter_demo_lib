@@ -1,0 +1,37 @@
+name: Publish to pub.dev
+
+on:
+  push:
+    tags:
+      # Must match the tag pattern configured on pub.dev: v{{version}}
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+permissions:
+  contents: read
+
+jobs:
+  verify-tag:
+    name: Verify tag matches pubspec version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compare tag with pubspec.yaml
+        run: |
+          version=$(sed -n 's/^version: *//p' pubspec.yaml | head -n 1)
+          expected="v$version"
+          if [ "$expected" != "$GITHUB_REF_NAME" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match pubspec version $version" >&2
+            exit 1
+          fi
+
+  publish:
+    name: Publish
+    needs: verify-tag
+    permissions:
+      id-token: write # Required for pub.dev authentication over OIDC
+      contents: read
+    uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
+    with:
+      # Must match the environment name configured on pub.dev, if one is required.
+      environment: pub.dev
+      use-flutter: true
