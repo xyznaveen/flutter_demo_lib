@@ -11,9 +11,9 @@ tests default.
   `dart pub publish --dry-run`.
 - **Platforms: Android and iOS only.** Do not add web, desktop, or macOS/Linux/
   Windows platform folders.
-- **Publishing:** pub.dev package `flutter_demo_lib_naveen`, published from the
-  `v{{version}}` tag workflow. pub.dev rejects OIDC tokens from branch refs, so
-  do not add a `workflow_dispatch` publish trigger or publish from `master`.
-  The tag must match `pubspec.yaml`.
+- **Publishing:** pub.dev package `flutter_demo_lib_naveen`, published only from
+  the manual `workflow_dispatch` workflow on `master`/`main`. It uses the
+  `PUB_CREDENTIALS_B64` secret, not OIDC, so no tag is required. The version
+  input must match `pubspec.yaml`. Never print or commit the credential.
 - **Keep the iOS names aligned:** the podspec file, Swift package directory,
   package name, and library product must follow the Dart package name.

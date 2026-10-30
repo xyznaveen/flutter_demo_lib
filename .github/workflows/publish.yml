@@ -1,38 +1,58 @@
 name: Publish to pub.dev
 
-# pub.dev only accepts publish tokens from a tag ref. Push a matching tag, or
-# create a GitHub Release for it, when you want to publish.
+# Manual publish using a pub.dev OAuth credential stored in the
+# PUB_CREDENTIALS_B64 repository secret. No OIDC and no tag required.
 on:
-  push:
-    tags:
-      # Must match the tag pattern configured on pub.dev: v{{version}}
-      - 'v[0-9]+.[0-9]+.[0-9]+'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish. Must match pubspec.yaml, with or without a leading v. Example: 0.0.2.'
+        required: true
+        type: string
 
 permissions:
   contents: read
 
 jobs:
-  verify:
-    name: Verify tag matches pubspec version
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - name: Compare tag with pubspec.yaml
-        run: |
-          version=$(sed -n 's/^version: *//p' pubspec.yaml | head -n 1)
-          expected="v$version"
-          if [ "$expected" != "$GITHUB_REF_NAME" ]; then
-            echo "Tag $GITHUB_REF_NAME does not match pubspec version $version" >&2
-            exit 1
-          fi
-
   publish:
     name: Publish
-    needs: verify
-    permissions:
-      id-token: write # Required for pub.dev authentication over OIDC
-      contents: read
-    uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
-    with:
-      # Must match the environment name configured on pub.dev, if one is required.
-      environment: pub.dev
+    runs-on: ubuntu-latest
+    # Optional: add required reviewers to this environment in GitHub settings.
+    environment: pub.dev
+    steps:
+      - uses: actions/checkout@v7
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Verify version and branch
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
+        run: |
+          input_version="${INPUT_VERSION#v}"
+          version=$(sed -n 's/^version: *//p' pubspec.yaml | head -n 1)
+          if [ "$input_version" != "$version" ]; then
+            echo "Input version '$INPUT_VERSION' does not match pubspec version '$version'." >&2
+            exit 1
+          fi
+          case "$GITHUB_REF" in
+            refs/heads/master|refs/heads/main) ;;
+            *)
+              echo "Run this workflow from master or main, not $GITHUB_REF." >&2
+              exit 1
+              ;;
+          esac
+          echo "Publishing $version from $GITHUB_REF"
+      - name: Restore pub credentials
+        env:
+          PUB_CREDENTIALS_B64: ${{ secrets.PUB_CREDENTIALS_B64 }}
+        run: |
+          config_dir="${XDG_CONFIG_HOME:-$HOME/.config}/dart"
+          mkdir -p "$config_dir"
+          printf '%s' "$PUB_CREDENTIALS_B64" | base64 -d > "$config_dir/pub-credentials.json"
+          chmod 600 "$config_dir/pub-credentials.json"
+          test -s "$config_dir/pub-credentials.json"
+      - name: Dry run
+        run: dart pub publish --dry-run
+      - name: Publish
+        run: dart pub publish -f
