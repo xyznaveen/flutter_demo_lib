@@ -34,21 +34,25 @@ fine for a test package. Change them if you want your own namespace.
 
 ## How publishing works
 
-Publishing is manual. It does not run on pushes or tags.
+pub.dev only accepts a publish token from a tag ref. A manual dispatch from
+`master` is a branch ref and is always rejected, so publishing is deliberate:
+nothing is published on normal commits.
 
 1. Bump `version` in `pubspec.yaml` and update `CHANGELOG.md`.
 2. Commit and push to `master`.
 3. Wait for the **CI** workflow to pass.
-4. Open `https://github.com/xyznaveen/flutter_demo_lib/actions`, select
-   **Publish to pub.dev**, click **Run workflow**, choose `master`, and enter the
-   exact version from `pubspec.yaml`.
+4. Create a GitHub Release with the tag `vX.Y.Z`, or push the tag directly:
+   ```sh
+   git tag v0.0.2
+   git push origin v0.0.2
+   ```
 5. Approve the run if you enabled required reviewers on the `pub.dev`
    environment.
 
-The workflow rejects the run when the input version does not match
-`pubspec.yaml`, or when it is not started from `master` or `main`. It then uses
-the `dart-lang/setup-dart` reusable publish workflow with OIDC, so no
-`PUB_TOKEN` secret is stored in the repository.
+The tag push triggers **Publish to pub.dev**. The workflow first verifies that
+the tag equals `v` plus the `pubspec.yaml` version, then uses the
+`dart-lang/setup-dart` reusable publish workflow with OIDC. No `PUB_TOKEN`
+secret is stored in the repository.
 
 ## pub.dev settings
 
@@ -56,9 +60,9 @@ On `https://pub.dev/packages/flutter_demo_lib_naveen/admin`, under
 **Automated publishing**:
 
 - Repository: `xyznaveen/flutter_demo_lib`
-- Tag pattern: `v{{version}}` (keep the field; this repository does not use it)
-- **Enable publishing from workflow_dispatch events**: checked
-- **Enable publishing from push events**: unchecked
+- Tag pattern: `v{{version}}`
+- **Enable publishing from push events**: checked
+- **Enable publishing from workflow_dispatch events**: unchecked
 - Optional: **Require GitHub Actions environment**, name `pub.dev`
 
 The environment is optional, but if you enable it, the name must be `pub.dev`

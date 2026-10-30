@@ -1,41 +1,30 @@
 name: Publish to pub.dev
 
-# Manual only: Actions > Publish to pub.dev > Run workflow.
+# pub.dev only accepts publish tokens from a tag ref. Push a matching tag, or
+# create a GitHub Release for it, when you want to publish.
 on:
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'Version to publish. Must match pubspec.yaml, with or without a leading v. Example: 0.0.2.'
-        required: true
-        type: string
+  push:
+    tags:
+      # Must match the tag pattern configured on pub.dev: v{{version}}
+      - 'v[0-9]+.[0-9]+.[0-9]+'
 
 permissions:
   contents: read
 
 jobs:
   verify:
-    name: Verify version and branch
+    name: Verify tag matches pubspec version
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - name: Verify manual publish request
-        env:
-          INPUT_VERSION: ${{ inputs.version }}
+      - name: Compare tag with pubspec.yaml
         run: |
-          input_version="${INPUT_VERSION#v}"
           version=$(sed -n 's/^version: *//p' pubspec.yaml | head -n 1)
-          if [ "$input_version" != "$version" ]; then
-            echo "Input version '$INPUT_VERSION' does not match pubspec version '$version'." >&2
+          expected="v$version"
+          if [ "$expected" != "$GITHUB_REF_NAME" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match pubspec version $version" >&2
             exit 1
           fi
-          case "$GITHUB_REF" in
-            refs/heads/master|refs/heads/main) ;;
-            *)
-              echo "Run this workflow from master or main, not $GITHUB_REF." >&2
-              exit 1
-              ;;
-          esac
-          echo "Publishing $version from $GITHUB_REF"
 
   publish:
     name: Publish
