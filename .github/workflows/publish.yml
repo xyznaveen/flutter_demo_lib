@@ -46,4 +46,3 @@ jobs:
     with:
       # Must match the environment name configured on pub.dev, if one is required.
       environment: pub.dev
-      use-flutter: true

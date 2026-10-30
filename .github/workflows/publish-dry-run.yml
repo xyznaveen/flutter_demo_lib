@@ -1,7 +1,6 @@
 name: Publish dry run
 
-# Manual run: validates and packages the plugin exactly like the publish
-# workflow, but does not upload anything to pub.dev.
+# Manual run: validates and packages the plugin, but does not upload anything.
 on:
   workflow_dispatch:
 
@@ -10,10 +9,14 @@ permissions:
 
 jobs:
   dry-run:
-    name: Package and verify archive
-    permissions:
-      contents: read
-    uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
-    with:
-      test-run: true
-      use-flutter: true
+    name: Validate package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - name: Dry run
+        run: dart pub publish --dry-run
