@@ -9,9 +9,9 @@ Pod::Spec.new do |s|
   s.description      = <<-DESC
 A minimal Flutter plugin used to test the pub.dev publishing flow.
                        DESC
-  s.homepage         = 'https://github.com/YOUR_GITHUB_USER/flutter_demo_lib'
+  s.homepage         = 'https://github.com/xyznaveen/flutter_demo_lib'
   s.license          = { :file => '../LICENSE' }
-  s.author           = { 'YOUR_NAME' => 'you@example.com' }
+  s.author           = { 'Naveen Niraula' => 'subtlenv@gmail.com' }
   s.source           = { :path => '.' }
   s.source_files = 'flutter_demo_lib/Sources/flutter_demo_lib/**/*'
   s.dependency 'Flutter'

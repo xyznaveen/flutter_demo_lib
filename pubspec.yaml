@@ -2,10 +2,9 @@ name: flutter_demo_lib
 description: A minimal Flutter plugin for Android and iOS used to test the pub.dev publishing flow from GitHub Actions.
 version: 0.0.2
 
-# Replace YOUR_GITHUB_USER before publishing.
-homepage: https://github.com/YOUR_GITHUB_USER/flutter_demo_lib
-repository: https://github.com/YOUR_GITHUB_USER/flutter_demo_lib
-issue_tracker: https://github.com/YOUR_GITHUB_USER/flutter_demo_lib/issues
+homepage: https://github.com/xyznaveen/flutter_demo_lib
+repository: https://github.com/xyznaveen/flutter_demo_lib
+issue_tracker: https://github.com/xyznaveen/flutter_demo_lib/issues
 
 topics:
   - demo
