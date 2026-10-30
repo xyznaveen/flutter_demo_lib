@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'flutter_demo_lib_naveen'
-  s.version          = '0.0.1'
+  s.version          = '0.0.2'
   s.summary          = 'A minimal Flutter plugin for Android and iOS.'
   s.description      = <<-DESC
 A minimal Flutter plugin used to test the pub.dev publishing flow.

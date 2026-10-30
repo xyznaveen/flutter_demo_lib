@@ -32,58 +32,51 @@ flutter run
 The Android application id (`dev.naveen.flutter_demo_lib`) and iOS bundle id are
 fine for a test package. Change them if you want your own namespace.
 
-## First publish is manual
+## How publishing works
 
-pub.dev only enables automated publishing for packages that already exist, so
-`0.0.1` must be published from your machine:
+Publishing is manual. It does not run on pushes or tags.
 
-```sh
-flutter pub publish --dry-run
-flutter pub publish
-```
+1. Bump `version` in `pubspec.yaml` and update `CHANGELOG.md`.
+2. Commit and push to `master`.
+3. Wait for the **CI** workflow to pass.
+4. Open `https://github.com/xyznaveen/flutter_demo_lib/actions`, select
+   **Publish to pub.dev**, click **Run workflow**, choose `master`, and enter the
+   exact version from `pubspec.yaml`.
+5. Approve the run if you enabled required reviewers on the `pub.dev`
+   environment.
 
-Do not push a `v0.0.1` tag before this step. The publish workflow would try to
-publish a version that is already gone, and automated publishing is not enabled
-yet.
+The workflow rejects the run when the input version does not match
+`pubspec.yaml`, or when it is not started from `master` or `main`. It then uses
+the `dart-lang/setup-dart` reusable publish workflow with OIDC, so no
+`PUB_TOKEN` secret is stored in the repository.
 
-## Enable automated publishing
+## pub.dev settings
 
-After `0.0.1` is live, open
-`https://pub.dev/packages/flutter_demo_lib_naveen/admin`:
+On `https://pub.dev/packages/flutter_demo_lib_naveen/admin`, under
+**Automated publishing**:
 
-1. Open **Automated publishing**.
-2. Enable **publishing from GitHub Actions**.
-3. Repository: `xyznaveen/flutter_demo_lib`.
-4. Tag pattern: `v{{version}}`.
-5. Optional: enable **Require GitHub Actions environment** and use the name
-   `pub.dev`. The workflow already passes that environment.
+- Repository: `xyznaveen/flutter_demo_lib`
+- Tag pattern: `v{{version}}` (keep the field; this repository does not use it)
+- **Enable publishing from workflow_dispatch events**: checked
+- **Enable publishing from push events**: unchecked
+- Optional: **Require GitHub Actions environment**, name `pub.dev`
 
-No `PUB_TOKEN` secret is stored in the repository. The publish job authenticates
-with the GitHub OIDC token.
+The environment is optional, but if you enable it, the name must be `pub.dev`
+because that is what `.github/workflows/publish.yml` passes.
 
-## Release a new version from GitHub
+## CI
 
-Bump `version` in `pubspec.yaml` (for example to `0.0.2`), update
-`CHANGELOG.md`, commit, then push a matching tag:
+`.github/workflows/ci.yml` runs on every push to `main` or `master`, on pull
+requests, and on demand with **Run workflow**:
 
-```sh
-git tag v0.0.2
-git push origin v0.0.2
-```
+- `dart format --set-exit-if-changed .`
+- `flutter analyze`
+- `dart pub publish --dry-run`
+- Android release build of the example app
+- iOS release build of the example app (no code signing)
 
-`.github/workflows/publish.yml` runs on `v[0-9]+.[0-9]+.[0-9]+` tags. A guard
-job fails fast when the tag and the `pubspec.yaml` version differ. It then calls
-the `dart-lang/setup-dart` reusable publish workflow, which publishes to pub.dev.
-
-## Run the CI on GitHub
-
-Open https://github.com/xyznaveen/flutter_demo_lib/actions and pick a workflow:
-
-- **CI** runs automatically on every push to `main` or `master`, on pull
-  requests, and on demand with **Run workflow**. It checks formatting, analyzes,
-  validates the package, and builds the example for Android and iOS.
-- **Publish dry run** is manual only. It runs the same validation and archive
-  packaging as the real publish, with no upload to pub.dev.
+`.github/workflows/publish-dry-run.yml` is manual and packages the plugin exactly
+like the publish workflow without uploading anything.
 
 ## License
 

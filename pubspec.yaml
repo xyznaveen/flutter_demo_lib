@@ -1,6 +1,6 @@
 name: flutter_demo_lib_naveen
 description: A minimal Flutter plugin for Android and iOS used to test the pub.dev publishing flow from GitHub Actions.
-version: 0.0.1
+version: 0.0.2
 
 homepage: https://github.com/xyznaveen/flutter_demo_lib
 repository: https://github.com/xyznaveen/flutter_demo_lib
