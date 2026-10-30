@@ -33,6 +33,9 @@ flutter run
    are fine for a test package. Change them if you want your own namespace.
 4. Version `0.0.1` already exists on pub.dev, so this repository starts at
    `0.0.2`.
+5. The package is currently marked discontinued on pub.dev. Publishing still
+   works, but re-enable it from the admin tab if you want the new version
+   listed.
 
 ## Enable automated publishing
 
