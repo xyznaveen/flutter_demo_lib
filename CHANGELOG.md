@@ -1,6 +1,5 @@
-## 0.0.2
+## 0.0.1
 
-- Rebuilt as a minimal Android and iOS plugin for testing the GitHub Actions
-  publishing flow.
+- Initial release.
 - `getPlatformVersion` returns the Android or iOS version.
 - `greet` returns a greeting built by the native platform code.

@@ -1,1 +1,1 @@
-rootProject.name = "flutter_demo_lib"
+rootProject.name = "flutter_demo_lib_naveen"

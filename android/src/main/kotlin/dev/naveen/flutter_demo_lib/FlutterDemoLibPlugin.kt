@@ -14,7 +14,7 @@ class FlutterDemoLibPlugin :
     private lateinit var channel: MethodChannel
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-        channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutter_demo_lib")
+        channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutter_demo_lib_naveen")
         channel.setMethodCallHandler(this)
     }
 

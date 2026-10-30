@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_demo_lib/flutter_demo_lib.dart';
+import 'package:flutter_demo_lib_naveen/flutter_demo_lib_naveen.dart';
 
 void main() => runApp(const DemoApp());
 
@@ -9,7 +9,7 @@ class DemoApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'flutter_demo_lib example',
+      title: 'flutter_demo_lib_naveen example',
       theme: ThemeData(colorSchemeSeed: Colors.teal),
       home: const DemoScreen(),
     );
@@ -56,7 +56,7 @@ class _DemoScreenState extends State<DemoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('flutter_demo_lib')),
+      appBar: AppBar(title: const Text('flutter_demo_lib_naveen')),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(

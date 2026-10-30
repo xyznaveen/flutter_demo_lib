@@ -4,19 +4,19 @@
 import PackageDescription
 
 let package = Package(
-    name: "flutter_demo_lib",
+    name: "flutter_demo_lib_naveen",
     platforms: [
         .iOS("15.0")
     ],
     products: [
-        .library(name: "flutter-demo-lib", targets: ["flutter_demo_lib"])
+        .library(name: "flutter-demo-lib-naveen", targets: ["flutter_demo_lib_naveen"])
     ],
     dependencies: [
         .package(name: "FlutterFramework", path: "../FlutterFramework")
     ],
     targets: [
         .target(
-            name: "flutter_demo_lib",
+            name: "flutter_demo_lib_naveen",
             dependencies: [
                 .product(name: "FlutterFramework", package: "FlutterFramework")
             ],

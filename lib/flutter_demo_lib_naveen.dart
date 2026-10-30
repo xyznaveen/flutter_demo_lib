@@ -5,7 +5,9 @@ class FlutterDemoLib {
   /// Creates a plugin instance.
   const FlutterDemoLib();
 
-  static const MethodChannel _channel = MethodChannel('flutter_demo_lib');
+  static const MethodChannel _channel = MethodChannel(
+    'flutter_demo_lib_naveen',
+  );
 
   /// Returns the host platform and version, for example `Android 15`.
   Future<String> getPlatformVersion() async {
